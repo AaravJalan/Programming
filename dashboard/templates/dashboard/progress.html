@@ -1,0 +1,79 @@
+{% extends "dashboard/layout.html" %}
+{% load static %}
+
+{%block title%}
+    Progress
+{%endblock%}
+
+{%block body%}
+<style>
+    .badge-light{
+        font-size:20px; 
+        color:black; 
+        display: inline; 
+        margin:0
+    }
+    #heading > h1{
+        display:inline; 
+    }
+    .alert-warning > button{
+        margin:5px 20px
+    }
+    @media(max-width: 762px){
+        #heading>h1{
+            font-size: 30px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+    }
+    </style>
+
+<div id = "heading" style="padding:10px;margin-bottom: 10px;">
+    <h1>All Time Progress</h1>
+</div>
+
+<center class = "taskprogress alert alert-info">
+    <h1 style="font-weight:bold">Tasks</h1>
+    <div class = "task-info">
+        <h4 style="margin:20px 20px">Completed: {{completedTasks}}</h4>    
+        <h4 style="margin:20px 20px">All: {{allTasks}}</h4>
+    </div>
+    <div class="progress" style="height:50px; width: 90%;display:inline-block; background-color: grey;">
+        <div class="progress-bar" role="progressbar" id = "{{tasks_percentage}}" style="width:0%; height: 100%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"><b style="font-size:20px">{{tasks_percentage}}%</b></div>
+    </div>
+</center>
+
+<center class = "alert alert-warning" style="width:100%; display:flex; flex-wrap: wrap; justify-content: center;">
+    <button type="button" class="btn btn-primary">
+        <b style="font-size: 30px;">Active Alarms: </b> <span style="color:black; font-size: 25px;" class="badge badge-light">{{activeAlarms}}</span>
+    </button>
+    <button type="button" class="btn btn-primary">
+        <b style="font-size: 30px;">All Alarms: </b> <span style="color:black; font-size: 25px;" class="badge badge-light">{{allAlarms}}</span>
+    </button>
+    <button type="button" class="btn btn-primary">
+        <b style="font-size: 30px;">Stopwatch Used: </b> <span style="color:black; font-size: 25px;" class="badge badge-light">{{stop_count}} Times</span>
+    </button>
+</center>
+<center class = "alert alert-success" style="font-size:25px">
+    <b>Pinned Links: </b>{{pinnedLinks}}
+    <br>
+    <b>All Links: </b>{{allLinks}}
+</center>
+<center class = "alert alert-danger" style="height:120px; width:100%">
+        <b style="font-size: 30px; margin-bottom: 10px;display: block;">Current Mode</b>
+        {%if user.darkmode%}
+            <div class="badge badge-light" style="font-size:20px; color:black; display: inline; margin:0">🌒 Dark</div>
+        {%else%}
+            <div class="badge badge-light" style=>🌟 Light</div>
+        {%endif%}
+</center>
+{%endblock%}
+
+{%block script%}
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            bar = document.querySelector(".progress-bar");
+            bar.style.width = `${parseInt(bar.id)}%`;})
+    </script>
+{%endblock%}

@@ -1,0 +1,118 @@
+{% extends "dashboard/layout.html" %}
+
+{%block body%}
+<style>
+.task::-webkit-scrollbar {
+  display: none;
+}
+.task {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.tasks{
+    width:48%;
+}
+#pop{
+    left:90%;
+}
+.alarm{
+    width:48%; 
+}
+@media(max-width:900px){
+    #pop{
+        left:80%;
+    }
+    .alarm{
+        width:98%; 
+    }
+    .tasks{
+        width:45%;
+    }
+}
+</style>
+
+<div class="tasks alert alert-success" style="position:absolute; height: 650px; padding:20px; margin:15px 0; background-color: rgb(212, 255, 212);">
+    {%for item in todo%}
+        <div class = "alert alert-primary task" id = "{{item.id}}" style="max-height: 110px; overflow-y: scroll;">
+            <a style="text-decoration: none;"><h1 style = "font-weight: bold; display: inline; font-size: 23px;" class="name">{{item.name}}</h1></a>      
+            <input type = "submit" style="display: block; float:right;" class="btn btn-success completed" value="✅">
+            <p class="action" style = "font-size: 13px; margin-top: 7px; margin-bottom: 0px;">{{item.action}}</p>
+        </div>
+    {%empty%}
+        <div class="alert alert-info" style="width:100%"><h5>You have no pending tasks as of now. <br>Visit the To-Do page to add more.<input type = "submit" style="display: block; float:right;" class="btn btn-success" value="✅"></h5></div>
+    {%endfor%}
+    <a href="{%url 'todo'%}"><button id="pop" style="position:absolute; top:90%;"class="btn btn-primary">↗️</button></a>
+</div>
+
+<div style="margin:10px 0; width:50%; float:right; display: inline;">
+    {%include "dashboard/stopwatch.html"%}
+    <div style="margin:10px 0; width:99%; float:right; display: inline;">
+        <div id = "alarms" class = "alert alert-info" style="min-height:335px; width:100%; display: flex; flex-wrap: wrap;">
+            {%for alarm in alarms%}
+                {%if not alarm.expired %}
+                    <div class = "alert alert-primary alarm" id = "{{alarm.id}}" style="margin: 5px 5px">
+                {%else%}
+                    <div class = "alert alert-danger alarm" id = "{{alarm.id}}" style="margin: 5px 5px">
+                {%endif%}
+                        <a style="text-decoration: none;"><h1 style = "font-weight: bold; display: inline; font-size: 25px;" class="name">⏰ {{alarm.name}}</h1></a>
+                        <h3 style = "font-size: 17px; margin-top: 10px;">{{alarm.date_time}}</h3>
+                        <div style="font-size: 16px"  id = "countdown-{{alarm.id}}">00:00:00</div>
+                    </div>
+            {%empty%}
+                <div class="alert alert-primary" style="width:100%;"><h5>You have no alarms currently set. <br>Visit the <a href = {%url 'time'%}>Time</a> page to add more.</h5></div>
+            {%endfor%}
+        </div>
+    </div>
+</div>
+
+{%endblock%}
+
+{%block script%}
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+
+        document.querySelectorAll('.completed').forEach(button => {
+            button.addEventListener('click', ()=>{
+                const task = button.parentElement;
+                task.className = "alert alert-success"
+                task.style.display = "none";
+                event.preventDefault();
+                fetch(`todo/${task.id}`, {
+                    method:'PUT',
+                })
+            })
+        });
+
+        fetch("time/alarm")
+        .then(response => response.json())
+        .then(values => {
+            values.forEach(value => {
+                var x = setInterval(function() {
+                    finalDate = new Date(`${value["date"]}`).getTime()/1000;
+                    var nowDate = new Date().getTime()/1000;
+                    distance =  finalDate - nowDate;
+
+                    var d = Math.floor(distance / (3600 * 24));
+                    var h = Math.floor((distance % (3600 * 24)) / (3600));
+                    var m = Math.floor((distance % (3600)) / (60));
+                    var s = Math.floor((distance % (60)));
+
+                    if (distance < 0){
+                        alarm = document.querySelector(`#countdown-${value.id}`)
+                        alarm.innerHTML = "<b>EXPIRED</b>";
+                        alarm.parentElement.className = "alert alert-danger alarm";
+                        
+                        fetch(`/time/alarm/${value.id}`, {
+                            'method':'PUT'
+                        })
+                        clearInterval(x);
+                    }
+                    else{
+                        document.querySelector(`#countdown-${value.id}`).innerHTML = d + "d " + h + "h " + m + "m " + s + "s";
+                    }
+                }, 1000) 
+            });
+        });
+    });
+</script>
+{%endblock%}

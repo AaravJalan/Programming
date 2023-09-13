@@ -1,0 +1,129 @@
+{% extends "dashboard/layout.html" %}
+{% load static %}
+
+{%block title%}
+    Links
+{%endblock%}
+
+{%block body%}
+<style>
+    #new{
+        z-index: 5;
+        position: absolute;
+        top: 10%;
+        left: 30%;
+        background-color: whitesmoke;
+        padding: 30px;
+        border-radius: 10px;
+        width:50%;
+    }
+    #heading > button{
+        position:absolute;
+        display: inline;
+    }
+    #heading > h1{
+        display: inline;
+        margin-bottom: 10px;
+    }
+    #heading{
+        margin-bottom: 10px;
+    }
+    .btn-info{
+        margin-left:20%;
+    }
+    @media(min-width: 1000px){
+        .link-item{
+            width:32%;  
+        }
+    }
+    @media(max-width: 999px){
+        .link-item{
+            width:45%;
+        }
+        #heading > .btn-warning{
+            display: none;
+        }
+        #new{
+            left:15%;
+            width:70%;
+        }
+    }
+    @media(max-width: 500px){
+        .link-item{
+            width:100%;
+        }
+        #heading>h1{
+            font-size: 30px;
+            position: relative;
+            left:40%;
+        }
+        #heading > button{
+            display: block;
+            margin-bottom: 50px;
+            margin-top: 2%;
+        }
+
+        #heading{
+            margin-bottom: 50px;
+        }
+        #heading >.btn-info{
+            float:left;
+            margin-left: 0;
+        }
+        #heading > .btn-warning{
+            display: none;
+        }
+         #new{
+            left:5%;
+            width:90%;
+        }
+    }
+ 
+    </style>
+    
+<div class="links-page" style="position: relative;">
+    <div id = "heading" style="padding:10px;">
+        <h1 style="display:inline; margin-bottom: 10px;">All Links</h1>
+        <button class="btn btn-info" style= "font-weight:bold; color: rgb(8,66,152);">ℹ️ Count: <span id="count">{{links.count}}</span></button>
+        <button class="create btn btn-success" style="margin-left:40%; background-color: rgb(0, 152, 10);">+ New Link</button>
+        <button class="btn btn-warning" style="margin-left:60%; width:auto; font-weight:bold; ;">Pin upto 5 Links for Easy Access! ꜛ</button>
+    </div>
+
+    <form id="new" action = "{%url 'links' %}" method="POST" style="margin-top: 20px; display:none;">
+        <h3 style="display:inline">New Link</h3>
+        <button style="display:inline; float: right;margin-bottom: 10px;" class="create btn-close btn-danger"></button> 
+        {%csrf_token%}
+        {{form.name}}
+        {{form.link}}
+        {{form.image}}
+        <center><input type = "submit", value="Create" class="btn btn-primary"></center>
+    </form>
+
+    <div id = "links-list" style= "display: flex; flex-wrap: wrap;">
+    {%for link in links%}
+        <div class="card alert alert-primary link-item" id = "{{link.id}}" style="margin: 5px 7px; flex-direction: row;">
+            <img class="card-img-top" style = "width: 30%;" src="{{link.image}}" alt="{{link.name}}">
+            <div class="card-body" style="height:100%">
+            <center>
+                <a href="{{link.link}}"><h3 class="card-title" style="display: block;">{{link.name}}</h3></a>
+                <form action = "{%url 'link' link.id %}" method="POST" style= "display: inline; margin: 0; padding: 0">
+                    {%csrf_token%}
+                    {%if not link.pinned%}
+                        <input type = "submit" class="btn btn-light pin" value="📌">
+                    {%else%}
+                        <input type = "submit" class="btn btn-warning pin" value="📌">
+                    {%endif%}
+                </form>
+                <input type = "submit" class="btn btn-danger delete" value="🗑">       
+            </center>
+            </div>
+        </div>
+    {%empty%}
+        <div class="alert alert-info" style="width:100%"><h2>Your Links are Empty!</h2></div>
+    {%endfor%}
+</div>
+{%endblock%}
+
+{%block script%}
+    <script src = "{%static 'dashboard/links.js' %}"></script>
+{%endblock%}

@@ -1,0 +1,117 @@
+{% extends "dashboard/layout.html" %}
+{% load static %}
+
+{%block title%}
+    ToDo
+{%endblock%}
+
+{%block body%}
+<style>
+    #new{
+        z-index: 5;
+        position: absolute;
+        top: 10%;
+        left:30%;
+        background-color: whitesmoke;
+        padding: 30px;
+        border-radius: 10px;
+        width:50%;
+    }
+    .standard-view > input[type=submit]{
+        display: block; float:right; margin: 0 2.5px
+    }
+    #heading > button{
+        position:absolute;
+        display: inline;
+    }
+    #heading > h1{
+        display: inline;
+        margin-bottom: 10px;
+    }
+    
+    .btn-info{
+        margin-left:20%;
+    }
+    @media(min-width: 1000px){
+        .task-item{
+            width:48.5%; 
+        }
+    }
+    @media(max-width: 999px){
+        .task-item{
+            width:48%;
+        }
+        #new{
+            left:15%;
+            width:70%;
+        }
+    }
+    @media(max-width: 762px){
+        .task-item{
+            width:100%;
+        }
+        #heading>h1{
+            font-size: 30px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+        #heading > button, #heading > a{
+            display: block;
+            margin-bottom: 7%;
+
+        }
+        #heading >.btn-info{
+            float:left;
+            margin-left: 0;
+        }
+        #new{
+            left:5%;
+            width:90%;
+        }
+    }
+</style>
+
+<div class="tasks" style="position: relative;">
+    <div id = "heading" style="padding:10px; margin-bottom: 10px;">
+        <h1>All Tasks</h1>
+        <button class="btn btn-info" style=" font-weight:bold; color: rgb(8,66,152);">ℹ️ Count: <span id="count">{{todo.count}}</span></button>
+        <button class="create btn btn-success" style="margin-left:40%; background-color: rgb(0, 152, 10);">+ New Task</button>
+        <a href="{%url 'todo-completed'%}"><button class="btn btn-success" style=" float:right; display:inline; background-color: rgb(0, 152, 10);">Completed</button></a>
+    </div>
+
+    <form id="new" action = "{%url 'todo' %}" method="POST" style="margin-top: 20px; display:none;">
+        <h3 style="display:inline">New Task</h3>
+        <button style="display:inline; float: right;margin-bottom: 10px;" class="create btn-close btn-danger"></button> 
+        {%csrf_token%}
+        {{form.name}}
+        {{form.action}}
+        <center><input type = "submit", value="Create" class="btn btn-primary"></center>
+    </form>
+
+    <div id = "task-list" style= "display: flex; flex-wrap: wrap;">
+        {%for item in todo%}
+            <div class = "task-item alert alert-primary" id = "{{item.id}}" style="margin: 5px 7px;">
+                <div class="standard-view">
+                    <a style="text-decoration: none;"><h1 style = "font-weight: bold; display: inline; font-size: 30px;" class="name">{{item.name}}</h1></a>
+                    <input type = "submit" class="btn btn-danger delete" value="🗑">       
+                    <input type = "submit" class="btn btn-success completed" value="✅">
+                    <input type = "submit" class="btn btn-primary edit" value="✎">
+                    <p class="action" style = "font-size: 13px; margin-top: 10px;">{{item.action}}</p>
+                    <p>{{item.date}}</p>
+                </div>
+                <div class = "edit_data" style="display: none; width: 600px;">
+                    <input type="text" placeholder="name" class="form-control mt-2 mb-1 mr-sm-2" value="{{item.name}}">
+                    <textarea autofocus placeholder = "Description" rows="4" class="form-control mt-0 mb-3 mr-sm-2" style = "min-height: 50px">{{item.action}}</textarea>
+                    <input type="submit" style="display: block; margin-top: 1%; width:20%;"  class = "btn btn-primary resave" value="Save">
+                </div>     
+            </div>
+        {%empty%}
+            <div class="alert alert-info" style="width:100%"><h2>Your Task Lists is Empty!</h2></div>
+        {%endfor%}
+    </div>
+{%endblock%}
+
+{%block script%}
+    <script src = "{%static 'dashboard/todo.js' %}"></script>
+{%endblock%}

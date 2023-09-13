@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <style>
+        #stopwatch-container input{
+            display: block; 
+            float:right; 
+            margin: 0 2.5px;
+        }
+        #stopwatch-controls{
+            display: inline;
+            margin: 0;
+            padding: 0;
+        }
+        #stopwatch-title{
+            display: inline; 
+        }
+        #stopwatch-time{
+            margin-top: 30px;
+            font-size: 650%;
+        }
+        @media(max-width: 1200px){
+            #stopwatch-time{
+            margin-top: 30px;
+            font-size: 500%;
+        }
+        }
+        @media(max-width: 960px){
+            #stopwatch-time{
+            margin-top: 30px;
+            font-size: 350%;}
+        }
+        @media(max-width: 740px){
+            #stopwatch-time{
+            margin-top: 30px;
+            font-size: 250%;
+            }
+            #stopwatch-controls{
+                display: block;
+                display: flex;
+                justify-content: center;
+            }
+            #stopwatch-title{
+                display: flex;
+                justify-content: center;
+            }
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            let [hours, minutes, seconds] = [0, 0, 0];
+            let timer = document.querySelector('#stopwatch-time');
+                interval = null;
+
+            document.getElementById('stop').addEventListener('click', () => {
+                clearInterval(interval);
+            });
+
+            document.getElementById('reset').addEventListener('click', () => {
+                clearInterval(interval);
+                [seconds, minutes, hours] = [0,0,0];
+                timer.innerHTML = '00 : 00 : 00';
+            });
+
+            document.getElementById('start').addEventListener('click', () => {
+                if(interval !== null){
+                clearInterval(interval);}
+                interval = setInterval(count,1000);
+                fetch("time",{
+                    method: 'PUT',
+                })
+            });
+
+            function count(){ 
+                seconds += 1;
+                if(seconds == 60){  
+                    seconds = 0;    
+                    minutes++;  
+
+                    if(minutes == 60){  
+                        minutes = 0;    
+                        hours++;    
+                    }
+                }
+
+                let h = hours < 10 ? "0" + hours : hours;
+                let m = minutes < 10 ? "0" + minutes : minutes;
+                let s = seconds < 10 ? "0" + seconds : seconds;
+                timer.innerHTML = ` ${h} : ${m} : ${s}`;
+            }
+    })  
+    </script>
+</head>
+<body>
+    <div id = "stopwatch-container" class = "alert alert-primary" style="width:99%;  height:300px; margin: 5px 5px">
+        <a style="text-decoration: none;"><h1 style = "font-weight: bold; font-size: 30px;" id="stopwatch-title">Stopwatch</h1></a>
+        <div id="stopwatch-controls">
+            <input id = "reset" type = "submit" class="btn btn-danger" value="↻">
+            <input id = "stop" type = "submit" class="btn btn-danger" value="⏸">    
+            <input id = "start" type = "submit" class="btn btn-danger" value="▶️"> 
+        <h3 style = "font-size: 17px; margin-top: 10px;"></h3>
+        </div>
+        <center><h1 id="stopwatch-time" style="margin-top: 50px;">00 : 00 : 00</h1></center>
+    </div>
+</body>
+</html>

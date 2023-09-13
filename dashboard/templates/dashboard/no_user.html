@@ -1,0 +1,23 @@
+{% extends "dashboard/layout.html" %}
+
+{%block body%}
+</style>
+<div class="tasks" style="position:absolute; width:97%; height: 650px; padding:20px; border-radius:10px; margin:15px 0; background-color: rgb(212, 255, 212);">
+    <center>
+        <h1>Please <a href = "{%url 'login'%}">login</a> to access this website's features.</h1>
+    </center>
+    
+    <center>
+        <ul class ="list-group" style="width:400px; margin-top: 100px;">
+            <li class="list-group-item list-group-item-success active">This Includes</li>
+            <li class="list-group-item list-group-item-success"><b>Overview</b> Page</li>
+            <li class="list-group-item list-group-item-success">Interactive, Feature Packed <b>ToDo Lists</b></li>
+            <li class="list-group-item list-group-item-success"><b>Alarms & Stopwatches</b> to Track Your Life</li>
+            <li class="list-group-item list-group-item-success">Handy <b>Links</b> to Locate Your Way across the Web</li>
+            <li class="list-group-item list-group-item-success"><b>Progress Page</b> to See Where you've Reached</li>
+            <li class="list-group-item list-group-item-success"><b>Dark Mode</b> Toggle to Unleash the Beast Within</li>
+            <li class="list-group-item list-group-item-success">And more...</li>
+        </ul>
+</center>
+</div>
+{%endblock%}
