@@ -1,5 +1,4 @@
-# Project Capstone: Dashboard
-## CS50 Web Development with Python & Javascript
+# Dashboard
 
 **Project Name:** Dashboard
 
@@ -16,7 +15,7 @@ Dashboard is a productivity website. With useful features such as links, notes a
 
 ### Why did I make this Website?
 
-Each of CS50w's projects were challenging in their own ways and required immense brainstorming, understanding and logic.
+Each of CS50W's projects were challenging in their own ways and required immense brainstorming, understanding and logic.
 
 Choosing an idea for this project was difficult as the previous 5 covered most concepts modern websites have. Managing time & notes has always been a difficult for me and others with a similar problem, so I decided to develop a tool to make this task easier for me.
 
@@ -121,6 +120,3 @@ python manage.py migrate
 ```
 python manage.py runserver
 ```
-## Conclusion
-
-This project was an excellent oppurtunity to test the skills I had obtained during these 12 weeks of CS50w. I greatly enjoyed this course and am delighted to have learnt, understood and enjoyed web design.
